@@ -7,10 +7,11 @@ class MemoryFirstCache:
         self.store = {}
         self.directory = directory
 
-    def get_val(key: str) -> Any:
+    def get_val(self,key: str) -> Any:
         val = self.store.get(key)
         if val is None:
-            self.__get_from_disk__(key)
+            val = self.__get_from_disk__(key)
+        return val
 
     def __get_from_memory__(key):
         return self.val.get(key)
@@ -25,11 +26,11 @@ class MemoryFirstCache:
     def __getitem__(self, key):
         return self.get_val(key)
 
-    def put_val(key: str, val: Any):
+    def put_val(self, key: str, val: Any):
         self.store[key] = val
         return
 
-    def __putitem__(self, key, val):
+    def __setitem__(self, key, val):
         return self.put_val(key, val)
 
     def flush():
