@@ -1,4 +1,5 @@
 import pathlib
+import pickle
 from typing import Any
 
 class MemoryFirstCache:
@@ -20,9 +21,11 @@ class MemoryFirstCache:
 
     def __get_from_disk__(self, key):
         try: 
-            val = (self.directory / key).read_text()
+            val = pickle.load(
+                (self.directory / key).open("rb")
+            )
         except FileNotFoundError:
-            raise ValueError
+            raise KeyError
         return val
     def __getitem__(self, key):
         return self.get_val(key)
@@ -54,8 +57,6 @@ class MemoryFirstCache:
             if verb == "DEL":
                 (self.directory / key).unlink()
             elif verb == "PUT":
-                (self.directory / key).write_text(
-                    self.__get_from_memory__(key)
-                )
+                pickle.dump(self.__get_from_memory__(key), (self.directory / key).open("wb"))
         return
 
