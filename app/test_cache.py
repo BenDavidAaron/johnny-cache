@@ -37,3 +37,14 @@ def test_rehydrate_from_disk(tmp_path):
     cash = MemoryFirstCache(tmp_path)
     assert cash["foo"] == "bar"
     assert cash["bonk"] == "bonk"
+
+def test_rehdrate_from_disk_large(tmp_path):
+    items_to_insert = {
+        str(n): str(uuid.uuid4())
+        for n in range(1000)
+    }
+    for key, val in items_to_insert.items():
+        (tmp_path / key).write_text(val)
+    cash = MemoryFirstCache(tmp_path)
+    for key,val in items_to_insert.items():
+        assert cash[key] == val
