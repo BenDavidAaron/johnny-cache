@@ -1,4 +1,5 @@
 import pytest
+import uuid
 
 from app.cache import MemoryFirstCache
 
@@ -17,3 +18,14 @@ def test_cache_put_get_and_del(tmp_path):
     with pytest.raises(ValueError):
         val = cash["nevada"]
     return
+
+def test_cache_flush(tmp_path):
+    cash = MemoryFirstCache(tmp_path)
+    items_to_insert = {
+        str(n): str(uuid.uuid4())
+        for n in range(10000)
+    }
+    for key, val in items_to_insert.items():
+        cash[key] = val
+    cash.flush()
+    assert len(items_to_insert) == len([_ for _ in cash.directory.glob('*')])

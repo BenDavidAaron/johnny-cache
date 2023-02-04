@@ -45,9 +45,9 @@ class MemoryFirstCache:
             pass
         return
 
-    def flush():
+    def flush(self):
         for key, val in self.__store__.items():
             val_path = self.directory / key
-            val_path.write(val)
+            val_path.write_text(val)
         return
 
