@@ -4,3 +4,4 @@ black==22.1.0
 pylint==2.4.4
 mypy==0.931
 httpx==0.23.3
+isort==5.12.0

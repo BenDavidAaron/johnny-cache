@@ -1,6 +1,7 @@
 import pathlib
 from typing import Any
 
+
 class MemoryFirstCache:
     """Store stuff for fast reading."""
     def __init__(self, directory: pathlib.Path, flush_interval: int=100):

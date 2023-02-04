@@ -1,9 +1,8 @@
-import pathlib
 import os
+import pathlib
+from typing import Any
 
 import fastapi
-
-from typing import Any
 
 DISK_PREFIX = pathlib.Path(
     os.environ.get("JONNY_CACHE_PREFIX", "~/.johnny_cache")
