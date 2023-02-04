@@ -1,21 +1,22 @@
 import pathlib
 from typing import Any
 
-
 class MemoryFirstCache:
     """Store stuff for fast reading."""
-    def __init__(self, directory: pathlib.Path, flush_interval: int=100):
-        self.__store__ = {}
+    def __init__(self, directory: pathlib.Path, flush_size: int=10000):
+        self.flush_size = flush_size
         self.directory = directory
+        self.__store__ = {}
+        self.__unflushed_objects__ = []
 
     def get_val(self,key: str) -> Any:
-        val = self.__store__.get(key)
+        val = self.__get_from_memory__(key)
         if val is None:
             val = self.__get_from_disk__(key)
         return val
 
     def __get_from_memory__(self, key):
-        return self.val.get(key)
+        return self.__store__.get(key)
 
     def __get_from_disk__(self, key):
         try: 
@@ -28,6 +29,11 @@ class MemoryFirstCache:
 
     def put_val(self, key: str, val: Any):
         self.__store__[key] = val
+        self.__unflushed_objects__.append(
+            ("PUT", key)
+        )
+        if len(self.__unflushed_objects__) > self.flush_size:
+            self.flush()
         return
 
     def __setitem__(self, key, val):
@@ -38,16 +44,18 @@ class MemoryFirstCache:
 
     def delete_val(self, key: str):
         del self.__store__[key]
-        try:
-            (self.directory / key).unlink()
-        except FileNotFoundError:
-            # lol never got flushed
-            pass
+        self.__unflushed_objects__.append(
+            ("DEL", key)
+        )
         return
 
     def flush(self):
-        for key, val in self.__store__.items():
-            val_path = self.directory / key
-            val_path.write_text(val)
+        for verb, key in self.__unflushed_objects__:
+            if verb == "DEL":
+                (self.directory / key).unlink()
+            elif verb == "PUT":
+                (self.directory / key).write_text(
+                    self.__get_from_memory__(key)
+                )
         return
 

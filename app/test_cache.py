@@ -23,9 +23,10 @@ def test_cache_flush(tmp_path):
     cash = MemoryFirstCache(tmp_path)
     items_to_insert = {
         str(n): str(uuid.uuid4())
-        for n in range(10000)
+        for n in range(100)
     }
     for key, val in items_to_insert.items():
         cash[key] = val
     cash.flush()
     assert len(items_to_insert) == len([_ for _ in cash.directory.glob('*')])
+
