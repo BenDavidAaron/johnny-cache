@@ -8,11 +8,6 @@ from app import cache, config
 app = fastapi.FastAPI()
 app_cache = cache.MemoryFirstCache(config.CACHE_PATH, flush_size=config.CACHE_SIZE)
 
-JsonObject = Dict[AnyStr, Any]
-JsonArray = List[Any]
-JsonStruct = Union[JsonArray, JsonObject]
-CacheValue = Union[JsonStruct, str]
-
 
 @app.get("/")
 async def healthcheck():
@@ -44,7 +39,7 @@ async def get_item(key: str):
 
 
 @app.put("/cache/{key}")
-async def put_item(key: str, value: JsonStruct = None):
+async def put_item(key: str, value: Any = fastapi.Body()):
     """Insert a value into the cache at key"""
     app_cache[key] = value
     return
