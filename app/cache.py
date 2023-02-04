@@ -24,8 +24,8 @@ class MemoryFirstCache:
     def __get_from_disk__(self, key):
         try:
             val = pickle.load((self.directory / key).open("rb"))
-        except FileNotFoundError:
-            raise KeyError
+        except FileNotFoundError as exc:
+            raise KeyError from exc
         return val
 
     def __getitem__(self, key):
@@ -36,7 +36,6 @@ class MemoryFirstCache:
         self.__unflushed_objects__.append(("PUT", key))
         if len(self.__unflushed_objects__) > self.flush_size:
             self.flush()
-        return
 
     def __setitem__(self, key, val):
         return self.put_val(key, val)
@@ -47,7 +46,6 @@ class MemoryFirstCache:
     def delete_val(self, key: str):
         del self.__store__[key]
         self.__unflushed_objects__.append(("DEL", key))
-        return
 
     def flush(self):
         for verb, key in self.__unflushed_objects__:
@@ -57,11 +55,9 @@ class MemoryFirstCache:
                 pickle.dump(
                     self.__get_from_memory__(key), (self.directory / key).open("wb")
                 )
-        return
 
     def invalidate(self):
         self.__store__ = {}
         self.__unflushed_objects__ = []
         for file in self.directory.glob("*"):
             file.unlink()
-        return
