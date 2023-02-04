@@ -4,19 +4,10 @@ from typing import Any, AnyStr, Dict, List, Union
 
 import fastapi
 
-from app import cache
-
-CACHE_PATH = (
-    pathlib.Path(os.environ.get("JONNY_CACHE_PREFIX", "~/.johnny_cache"))
-    .expanduser()
-    .absolute()
-)
-CACHE_PATH.mkdir(parents=True, exist_ok=True)
-
-CACHE_SIZE = int(os.environ.get("JOHNNY_CACHE_SIZE", "10000"))
+from app import cache, config
 
 app = fastapi.FastAPI()
-app_cache = cache.MemoryFirstCache(CACHE_PATH, flush_size=CACHE_SIZE)
+app_cache = cache.MemoryFirstCache(config.CACHE_PATH, flush_size=config.CACHE_SIZE)
 
 json_object = Dict[AnyStr, Any]
 json_array = List[Any]
