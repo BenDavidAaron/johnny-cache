@@ -31,6 +31,7 @@ def test_cache_flush(tmp_path):
         cash[key] = val
     cash.flush()
     assert len(items_to_insert) == len([_ for _ in cash.directory.glob("*")])
+    return
 
 
 def test_rehydrate_from_disk(tmp_path):
@@ -39,6 +40,7 @@ def test_rehydrate_from_disk(tmp_path):
     cash = MemoryFirstCache(tmp_path)
     assert cash["foo"] == "bar"
     assert cash["bonk"] == "bonk"
+    return
 
 
 def test_rehdrate_from_disk_large(tmp_path):
@@ -48,6 +50,7 @@ def test_rehdrate_from_disk_large(tmp_path):
     cash = MemoryFirstCache(tmp_path)
     for key, val in items_to_insert.items():
         assert cash[key] == val
+    return
 
 
 def test_put_and_get_binary_object(tmp_path):
@@ -56,6 +59,7 @@ def test_put_and_get_binary_object(tmp_path):
     cash["some_bytes"] = some_bytes
     cash.flush()
     assert cash["some_bytes"] == some_bytes
+    return
 
 
 def test_put_and_get_numbers(tmp_path):
@@ -64,6 +68,7 @@ def test_put_and_get_numbers(tmp_path):
     cash["nums"] = nums
     cash.flush()
     assert cash["nums"] == nums
+    return
 
 
 def test_put_and_get_set(tmp_path):
@@ -73,3 +78,14 @@ def test_put_and_get_set(tmp_path):
     cash["nums"] = nums
     cash.flush()
     assert cash["nums"] == nums
+    return
+
+
+def test_invalidation(tmp_path):
+    cash = MemoryFirstCache(tmp_path)
+    cash["foo"] = "bar"
+    cash.flush()
+    cash.invalidate()
+    with pytest.raises(KeyError):
+        cash["foo"]
+    return

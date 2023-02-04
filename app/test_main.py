@@ -21,43 +21,59 @@ def test_healthcheck(monkeypatched_server):
 
 
 def test_put_and_get(monkeypatched_server):
-    response = client.put("/foo", json=["bar"])
+    response = client.put("/cache/foo", json=["bar"])
     assert response.status_code == 200
-    response = client.get("/foo")
+    response = client.get("/cache/foo")
     assert response.status_code == 200
     assert response.json() == ["bar"]
 
 
 def test_get_nonexistent_key(monkeypatched_server):
-    response = client.get("/doesnt-exits-ayy-lmao")
+    response = client.get("/cache/doesnt-exits-ayy-lmao")
     assert response.status_code == 404
 
 
 def test_put_twice(monkeypatched_server):
-    response1 = client.put("/foo", json={"foo": "foo"})
+    response1 = client.put("/cache/foo", json={"foo": "foo"})
     assert response1.status_code == 200
-    response2 = client.put("/foo", json={"bar": "bar"})
+    response2 = client.put("/cache/foo", json={"bar": "bar"})
     assert response2.status_code == 200
-    response3 = client.get("/foo")
+    response3 = client.get("/cache/foo")
     assert response3.status_code == 200
     assert response3.json() == {"bar": "bar"}
 
 
 def test_404_after_delete(monkeypatched_server):
-    response1 = client.put("/foo", json=["bar"])
+    response1 = client.put("/cache/foo", json=["bar"])
     assert response1.status_code == 200
-    response2 = client.delete("/foo")
+    response2 = client.delete("/cache/foo")
     assert response2.status_code == 200
-    response3 = client.get("/foo")
+    response3 = client.get("/cache/foo")
     assert response3.status_code == 404
 
 
 def test_large_insertion(monkeypatched_server):
     data = {n: {"id": str(uuid.uuid4)} for n in range(1000)}
     for key, val in data.items():
-        response = client.put(f"/{key}", json=val)
+        response = client.put(f"/cache/{key}", json=val)
         assert response.status_code == 200
     for key, val in data.items():
-        response = client.get(f"/{key}")
+        response = client.get(f"/cache/{key}")
         assert response.status_code == 200
         assert response.json() == val
+
+
+def test_manual_flush(monkeypatched_server):
+    response = client.put(f"/cache/foo", json=["bar"])
+    assert response.status_code == 200
+    response = client.post("/opt/flush")
+    assert response.status_code == 200
+
+
+def test_manual_inalidation(monkeypatched_server):
+    response = client.put(f"/cache/foo", json=["bar"])
+    assert response.status_code == 200
+    response = client.delete("/opt/invalidate")
+    assert response.status_code == 200
+    response3 = client.get("/cache/foo")
+    assert response3.status_code == 404

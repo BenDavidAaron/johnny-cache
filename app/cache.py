@@ -1,6 +1,6 @@
 import pathlib
 import pickle
-from typing import Any
+from typing import Any, Dict, List, Tuple
 
 
 class MemoryFirstCache:
@@ -9,8 +9,8 @@ class MemoryFirstCache:
     def __init__(self, directory: pathlib.Path, flush_size: int = 10000):
         self.flush_size = flush_size
         self.directory = directory
-        self.__store__ = {}
-        self.__unflushed_objects__ = []
+        self.__store__: Dict[Any, Any] = {}
+        self.__unflushed_objects__: List[Tuple[str, Any]] = []
 
     def get_val(self, key: str) -> Any:
         val = self.__get_from_memory__(key)
@@ -57,4 +57,11 @@ class MemoryFirstCache:
                 pickle.dump(
                     self.__get_from_memory__(key), (self.directory / key).open("wb")
                 )
+        return
+
+    def invalidate(self):
+        self.__store__ = {}
+        self.__unflushed_objects__ = []
+        for file in self.directory.glob("*"):
+            file.unlink()
         return
