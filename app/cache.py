@@ -2,15 +2,17 @@ import pathlib
 import pickle
 from typing import Any
 
+
 class MemoryFirstCache:
     """Store stuff for fast reading."""
-    def __init__(self, directory: pathlib.Path, flush_size: int=10000):
+
+    def __init__(self, directory: pathlib.Path, flush_size: int = 10000):
         self.flush_size = flush_size
         self.directory = directory
         self.__store__ = {}
         self.__unflushed_objects__ = []
 
-    def get_val(self,key: str) -> Any:
+    def get_val(self, key: str) -> Any:
         val = self.__get_from_memory__(key)
         if val is None:
             val = self.__get_from_disk__(key)
@@ -20,21 +22,18 @@ class MemoryFirstCache:
         return self.__store__.get(key)
 
     def __get_from_disk__(self, key):
-        try: 
-            val = pickle.load(
-                (self.directory / key).open("rb")
-            )
+        try:
+            val = pickle.load((self.directory / key).open("rb"))
         except FileNotFoundError:
             raise KeyError
         return val
+
     def __getitem__(self, key):
         return self.get_val(key)
 
     def put_val(self, key: str, val: Any):
         self.__store__[key] = val
-        self.__unflushed_objects__.append(
-            ("PUT", key)
-        )
+        self.__unflushed_objects__.append(("PUT", key))
         if len(self.__unflushed_objects__) > self.flush_size:
             self.flush()
         return
@@ -47,9 +46,7 @@ class MemoryFirstCache:
 
     def delete_val(self, key: str):
         del self.__store__[key]
-        self.__unflushed_objects__.append(
-            ("DEL", key)
-        )
+        self.__unflushed_objects__.append(("DEL", key))
         return
 
     def flush(self):
@@ -57,6 +54,7 @@ class MemoryFirstCache:
             if verb == "DEL":
                 (self.directory / key).unlink()
             elif verb == "PUT":
-                pickle.dump(self.__get_from_memory__(key), (self.directory / key).open("wb"))
+                pickle.dump(
+                    self.__get_from_memory__(key), (self.directory / key).open("wb")
+                )
         return
-
