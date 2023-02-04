@@ -30,3 +30,10 @@ def test_cache_flush(tmp_path):
     cash.flush()
     assert len(items_to_insert) == len([_ for _ in cash.directory.glob('*')])
 
+
+def test_rehydrate_from_disk(tmp_path):
+    (tmp_path / "foo").write_text("bar")
+    (tmp_path / "bonk").write_text("bonk")
+    cash = MemoryFirstCache(tmp_path)
+    assert cash["foo"] == "bar"
+    assert cash["bonk"] == "bonk"
