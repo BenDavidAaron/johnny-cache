@@ -1,6 +1,7 @@
 from app import main
 from fastapi import testclient
 import pytest
+import uuid
 
 client = testclient.TestClient(main.app)
 
@@ -44,3 +45,13 @@ def test_404_after_delete(monkeypatched_server):
     response3 = client.get("/foo")
     assert response3.status_code == 404
 
+
+def test_large_insertion(monkeypatched_server):
+    data = {n: {"id": str(uuid.uuid4)} for n in range(1000) }
+    for key, val in data.items():
+        response = client.put(f"/{key}", json=val)
+        assert response.status_code == 200
+    for key, val in data.items():
+        response = client.get(f"/{key}")
+        assert response.status_code == 200
+        assert response.json() == val
