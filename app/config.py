@@ -9,4 +9,3 @@ CACHE_PATH = (
 CACHE_PATH.mkdir(parents=True, exist_ok=True)
 
 CACHE_SIZE = int(os.environ.get("JOHNNY_CACHE_FLUSH_SIZE", "1000"))
-
