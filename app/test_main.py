@@ -7,6 +7,9 @@ from app import main
 
 client = testclient.TestClient(main.app)
 
+# Disable some pylint errors that conflict with pytest
+# pylint: disable=redefined-outer-name,unused-argument
+
 
 @pytest.fixture(scope="function")
 def monkeypatched_server(monkeypatch, tmpdir):
@@ -64,14 +67,14 @@ def test_large_insertion(monkeypatched_server):
 
 
 def test_manual_flush(monkeypatched_server):
-    response = client.put(f"/cache/foo", json=["bar"])
+    response = client.put("/cache/foo", json=["bar"])
     assert response.status_code == 200
     response = client.post("/opt/flush")
     assert response.status_code == 200
 
 
 def test_manual_inalidation(monkeypatched_server):
-    response = client.put(f"/cache/foo", json=["bar"])
+    response = client.put("/cache/foo", json=["bar"])
     assert response.status_code == 200
     response = client.delete("/opt/invalidate")
     assert response.status_code == 200

@@ -53,7 +53,8 @@ class MemoryFirstCache:
                 (self.directory / key).unlink()
             elif verb == "PUT":
                 pickle.dump(
-                    self.__get_from_memory__(key), (self.directory / key).open("wb")
+                    self.__get_from_memory__(key),
+                    (self.directory / key).open("wb"),
                 )
 
     def invalidate(self):

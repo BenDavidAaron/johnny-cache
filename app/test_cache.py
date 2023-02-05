@@ -22,6 +22,7 @@ def test_cache_put_get_and_del(tmp_path):
     assert cash["nevada"] == "Carson City"
     del cash["nevada"]
     with pytest.raises(KeyError):
+        # pylint: disable=pointless-statement
         cash["nevada"]
 
 
@@ -88,4 +89,5 @@ def test_invalidation(tmp_path):
     cash.flush()
     cash.invalidate()
     with pytest.raises(KeyError):
+        # pylint: disable=pointless-statement
         cash["foo"]

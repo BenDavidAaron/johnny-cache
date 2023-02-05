@@ -1,5 +1,5 @@
 """Routing code for cache"""
-from typing import Any, AnyStr, Dict, List, Union
+from typing import Any
 
 import fastapi
 
@@ -18,7 +18,9 @@ app = fastapi.FastAPI(
         "url": "https://github.com/BenDavidAaron/johnny-cache/blob/717594b035e1db8d40184fad53842153491c8c4a/license",
     },
 )
-app_cache = cache.MemoryFirstCache(config.CACHE_PATH, flush_size=config.CACHE_SIZE)
+app_cache = cache.MemoryFirstCache(
+    config.CACHE_PATH, flush_size=config.CACHE_SIZE
+)
 
 
 @app.get("/")
