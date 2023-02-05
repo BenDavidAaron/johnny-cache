@@ -20,4 +20,4 @@ jobs:
         pip install black
     - name: Check formatting with Black
       run: |
-        ./scripts/format.sh
+        ./scripts/check_format.sh
