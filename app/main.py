@@ -5,7 +5,19 @@ import fastapi
 
 from app import cache, config
 
-app = fastapi.FastAPI()
+app = fastapi.FastAPI(
+    title="JohnnyCache",
+    description="He's a ramblin' man",
+    version="1.0.0",
+    contact={
+        "name": "Ben Aaron",
+        "url": "https://github.com/BenDavidAaron/johnny-cache",
+    },
+    licence_info={
+        "name": "AGPL_3.0",
+        "url": "https://github.com/BenDavidAaron/johnny-cache/blob/717594b035e1db8d40184fad53842153491c8c4a/license",
+    },
+)
 app_cache = cache.MemoryFirstCache(config.CACHE_PATH, flush_size=config.CACHE_SIZE)
 
 
