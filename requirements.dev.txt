@@ -1,6 +1,7 @@
 -r requirements.txt
 pytest==7.2.1
 black==22.1.0
+click==8.0.2
 pylint<5
 mypy==0.931
 httpx==0.23.3
