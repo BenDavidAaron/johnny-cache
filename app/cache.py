@@ -30,7 +30,11 @@ class MemoryFirstCache:
         return val
 
     def __getitem__(self, key):
-        return self.get(key)
+        val = self.get(key)
+        if val is None:
+            raise KeyError
+        else:
+            return val
 
     def put(self, key: str, val: Any):
         self.__store__[key] = val
@@ -46,7 +50,7 @@ class MemoryFirstCache:
         self.__unflushed_objects__.append(("DEL", key))
 
     def __delitem__(self, key):
-        return self.delete_val(key)
+        return self.delete(key)
 
     def flush(self):
         for verb, key in self.__unflushed_objects__:
