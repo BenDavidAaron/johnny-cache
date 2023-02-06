@@ -13,16 +13,16 @@ class MemoryFirstCache:
         self.__unflushed_objects__: List[Tuple[str, Any]] = []
 
     def get(self, key: str) -> Any:
-        val = self.__get_from_memory__(key)
+        val = self.__get_from_memory(key)
         if val is not None:
             return val
-        val = self.__get_from_disk__(key)
+        val = self.__get_from_disk(key)
         return val
 
-    def __get_from_memory__(self, key):
+    def __get_from_memory(self, key):
         return self.__store__.get(key)
 
-    def __get_from_disk__(self, key):
+    def __get_from_disk(self, key):
         try:
             val = pickle.load((self.directory / key).open("rb"))
         except FileNotFoundError as exc:
@@ -58,7 +58,7 @@ class MemoryFirstCache:
                 (self.directory / key).unlink()
             elif verb == "PUT":
                 pickle.dump(
-                    self.__get_from_memory__(key),
+                    self.__get_from_memory(key),
                     (self.directory / key).open("wb"),
                 )
 
