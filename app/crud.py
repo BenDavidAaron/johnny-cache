@@ -18,3 +18,8 @@ def delete_record(db: Session, key: str) -> None:
     db_record = db.query(models.Record).filter(models.Record.key == key).first()
     db.delete(db_record)
     db.commit()
+
+
+def delete_records(db: Session) -> None:
+    db.query(models.Record).delete()
+    db.commit()

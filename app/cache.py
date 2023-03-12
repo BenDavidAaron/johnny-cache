@@ -59,3 +59,4 @@ class MemoryFirstCache:
     def invalidate(self):
         self.__store__ = {}
         self.__unflushed_objects__ = []
+        crud.delete_records(self.db)
