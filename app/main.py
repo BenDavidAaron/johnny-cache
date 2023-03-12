@@ -19,8 +19,6 @@ app = fastapi.FastAPI(
     },
 )
 
-models.Base.metadata.create_all(bind=database.engine)
-
 app_cache = cache.MemoryFirstCache(flush_size=config.CACHE_SIZE)
 
 
