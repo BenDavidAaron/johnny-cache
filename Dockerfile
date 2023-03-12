@@ -4,6 +4,8 @@ WORKDIR /opt
 
 COPY requirements.txt /opt/requirements.txt
 COPY app/ /opt/app/
+COPY alembic.ini /opt/alembic.ini
+COPY alembic/ /opt/alembic/
 
 RUN pip install -r /opt/requirements.txt
 
