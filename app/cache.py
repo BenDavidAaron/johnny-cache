@@ -7,7 +7,7 @@ from app import crud, database
 class MemoryFirstCache:
     """Store stuff for fast reading."""
 
-    def __init__(self, directory: pathlib.Path, flush_size: int = 10000):
+    def __init__(self, flush_size: int = 10000):
         self.flush_size = flush_size
         self.__store__: Dict[Any, Any] = {}
         self.__unflushed_objects__: List[Tuple[str, Any]] = []

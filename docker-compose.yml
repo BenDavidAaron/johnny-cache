@@ -1,6 +1,15 @@
 version: '3.1'
 
 services:
+
+  johnny-cache:
+    build: .
+    restart: always
+    ports:
+      - "127.0.0.1:8000:80"
+    environment:
+      DB_CONN_STRING: "postgresql://app:insecure@db/app"
+
   db:
     image: postgres
     restart: always
