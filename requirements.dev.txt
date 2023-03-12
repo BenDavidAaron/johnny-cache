@@ -5,4 +5,4 @@ click==8.0.2
 pylint<5
 mypy==0.931
 httpx==0.23.3
-isort==5.12.0
+isort==5.11.5
